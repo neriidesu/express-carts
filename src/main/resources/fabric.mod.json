@@ -3,7 +3,7 @@
 	"id": "expresscarts",
 	"version": "${version}",
 	"name": "Express Carts",
-	"description": "New, faster minecarts useable by Vanilla clients.",
+	"description": "New, faster minecarts usable by Vanilla clients.",
 	"authors": [
 		"seercat"
 	],
