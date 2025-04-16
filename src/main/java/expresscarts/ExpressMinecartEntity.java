@@ -43,7 +43,7 @@ public class ExpressMinecartEntity extends MinecartEntity implements PolymerEnti
 
     @Override
     public BlockState getDefaultContainedBlock() {
-        return Blocks.BLUE_CARPET.getDefaultState();
+        return Blocks.RED_CARPET.getDefaultState();
     }
 
     @Override

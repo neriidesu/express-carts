@@ -1,6 +1,6 @@
 {
 	"schemaVersion": 1,
-	"id": "express-carts",
+	"id": "expresscarts",
 	"version": "${version}",
 	"name": "Express Carts",
 	"description": "New, faster minecarts useable by Vanilla clients.",
@@ -11,7 +11,7 @@
 		"sources": "https://github.com/seercat3160/express-carts"
 	},
 	"license": "MIT",
-	"icon": "assets/express-carts/icon.png",
+	"icon": "assets/expresscarts/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
@@ -22,9 +22,9 @@
 		]
 	},
 	"mixins": [
-		"express-carts.mixins.json",
+		"expresscarts.mixins.json",
 		{
-			"config": "express-carts.client.mixins.json",
+			"config": "expresscarts.client.mixins.json",
 			"environment": "client"
 		}
 	],

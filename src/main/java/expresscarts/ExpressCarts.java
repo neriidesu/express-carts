@@ -14,18 +14,17 @@ import org.slf4j.LoggerFactory;
 import eu.pb4.polymer.core.api.entity.PolymerEntityUtils;
 
 public class ExpressCarts implements ModInitializer {
-	public static final String MOD_ID = "express-carts";
-	public static final String NAMESPACE = "expresscarts";
+	public static final String MOD_ID = "expresscarts";
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	public static final EntityType<ExpressMinecartEntity> EXPRESS_MINECART_ENTITY = Registry.register(
 			Registries.ENTITY_TYPE,
-			Identifier.of(ExpressCarts.NAMESPACE, "minecart"),
+			Identifier.of(ExpressCarts.MOD_ID, "minecart"),
 			EntityType.Builder.create(ExpressMinecartEntity::new, SpawnGroup.MISC).dropsNothing()
 					.dimensions(0.98F, 0.7F).passengerAttachments(0.1875F).maxTrackingRange(8)
 					.build(RegistryKey.of(Registries.ENTITY_TYPE.getKey(),
-							Identifier.of(ExpressCarts.NAMESPACE, "minecart"))));
+							Identifier.of(ExpressCarts.MOD_ID, "minecart"))));
 
 	@Override
 	public void onInitialize() {

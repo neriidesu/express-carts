@@ -1,0 +1,11 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "category": "redstone",
+    "ingredients": [
+        "minecraft:minecart",
+        "minecraft:redstone_torch"
+    ],
+    "result": {
+        "id": "expresscarts:minecart"
+    }
+}
