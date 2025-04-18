@@ -13,6 +13,7 @@ import net.minecraft.entity.vehicle.MinecartEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import xyz.nucleoid.packettweaker.PacketContext;
 
@@ -56,4 +57,21 @@ public class ExpressMinecartEntity extends MinecartEntity implements PolymerEnti
         return new ItemStack(ModItems.EXPRESS_MINECART);
     }
 
+    @Override
+    // apply the brakes when the controlling player holds back while in the cart
+    protected Vec3d applySlowdown(Vec3d velocity) {
+        Vec3d vel = super.applySlowdown(velocity);
+
+        if (this.getFirstPassenger() instanceof ServerPlayerEntity player && player.getPlayerInput().backward()) {
+            // stop completely if going slowly. otherwise, slow down (but not as quickly as an unpowered powered rail)
+            return vel.length() < 0.03 ? Vec3d.ZERO : vel.multiply(0.8);
+        }
+
+        return vel;
+    }
+
+    @Override
+    public boolean canSprintAsVehicle() {
+        return super.canSprintAsVehicle();
+    }
 }
