@@ -3,12 +3,12 @@
   "package": "expresscarts.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "AbstractMinecartEntityAccessor",
-    "AbstractMinecartEntityMixin",
-    "EntityTrackerEntryMixin",
-    "ExperimentalMinecartControllerMixin",
+    "AbstractMinecartAccessor",
+    "AbstractMinecartMixin",
+    "ServerEntityMixin",
+    "NewMinecartBehaviorMixin",
     "MinecartItemMixin",
-    "ShapeContextMixin"
+    "CollisionContextMixin"
   ],
   "injectors": {
     "defaultRequire": 1

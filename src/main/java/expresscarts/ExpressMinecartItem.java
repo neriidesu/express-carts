@@ -1,26 +1,24 @@
 package expresscarts;
 
-import org.jetbrains.annotations.Nullable;
-
 import eu.pb4.polymer.core.api.item.PolymerItem;
 import eu.pb4.polymer.core.api.item.PolymerItemUtils;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.vehicle.AbstractMinecartEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.MinecartItem;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.MinecartItem;
+import net.minecraft.world.item.TooltipFlag;
+import org.jetbrains.annotations.Nullable;
 import xyz.nucleoid.packettweaker.PacketContext;
 
 public class ExpressMinecartItem extends MinecartItem implements PolymerItem {
     private final Item polymerItem;
 
-    public ExpressMinecartItem(EntityType<? extends AbstractMinecartEntity> type, Item.Settings settings,
-            Item polymerItem) {
-        super(type, settings);
+    public ExpressMinecartItem(EntityType<? extends AbstractMinecart> type, Item.Properties properties, Item polymerItem) {
+        super(type, properties);
         this.polymerItem = polymerItem;
     }
 
@@ -30,18 +28,18 @@ public class ExpressMinecartItem extends MinecartItem implements PolymerItem {
     }
 
     @Override
-    public ItemStack getPolymerItemStack(ItemStack itemStack, TooltipType tooltipType, PacketContext context) {
+    public ItemStack getPolymerItemStack(ItemStack itemStack, TooltipFlag tooltipType, PacketContext context) {
         ItemStack out = PolymerItemUtils.createItemStack(itemStack, tooltipType, context);
-        out.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
+        out.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
         return out;
     }
 
     @Override
-    public @Nullable Identifier getPolymerItemModel(ItemStack stack, PacketContext context) {
+    public @Nullable ResourceLocation getPolymerItemModel(ItemStack stack, PacketContext context) {
         if (PolymerResourcePackUtils.hasMainPack(context)) {
-            return stack.get(DataComponentTypes.ITEM_MODEL);
+            return stack.get(DataComponents.ITEM_MODEL);
         } else {
-            return this.getPolymerItem(stack, context).getDefaultStack().get(DataComponentTypes.ITEM_MODEL);
+            return this.getPolymerItem(stack, context).getDefaultInstance().get(DataComponents.ITEM_MODEL);
         }
     }
 

@@ -1,29 +1,28 @@
 package expresscarts;
 
-import java.util.function.Function;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
+import java.util.function.Function;
 
 public class ModItems {
     public static final Item EXPRESS_MINECART = register("minecart",
             settings -> new ExpressMinecartItem(ExpressCarts.EXPRESS_MINECART_ENTITY, settings, Items.MINECART),
-            new Item.Settings().maxCount(1));
+            new Item.Properties().stacksTo(1));
 
-    public static Item register(String name, Function<Item.Settings, Item> itemFactory, Item.Settings settings) {
+    public static Item register(String name, Function<Item.Properties, Item> itemFactory, Item.Properties properties) {
         // Create the item key.
-        RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, Identifier.of(ExpressCarts.MOD_ID, name));
+        ResourceKey<Item> itemKey = ResourceKey.create(BuiltInRegistries.ITEM.key(), ResourceLocation.fromNamespaceAndPath(ExpressCarts.MOD_ID, name));
 
         // Create the item instance.
-        Item item = itemFactory.apply(settings.registryKey(itemKey));
+        Item item = itemFactory.apply(properties.setId(itemKey));
 
         // Register the item.
-        Registry.register(Registries.ITEM, itemKey, item);
+        Registry.register(BuiltInRegistries.ITEM, itemKey, item);
 
         return item;
     }

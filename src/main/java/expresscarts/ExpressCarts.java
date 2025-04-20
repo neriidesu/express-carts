@@ -1,32 +1,30 @@
 package expresscarts;
 
-import net.fabricmc.api.ModInitializer;
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.block.dispenser.MinecartDispenserBehavior;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnGroup;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.Identifier;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.pb4.polymer.core.api.entity.PolymerEntityUtils;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
+import net.fabricmc.api.ModInitializer;
+import net.minecraft.core.Registry;
+import net.minecraft.core.dispenser.MinecartDispenseItemBehavior;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.level.block.DispenserBlock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ExpressCarts implements ModInitializer {
 	public static final String MOD_ID = "expresscarts";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	public static final EntityType<ExpressMinecartEntity> EXPRESS_MINECART_ENTITY = Registry.register(
-			Registries.ENTITY_TYPE,
-			Identifier.of(ExpressCarts.MOD_ID, "minecart"),
-			EntityType.Builder.create(ExpressMinecartEntity::new, SpawnGroup.MISC).dropsNothing()
-					.dimensions(0.98F, 0.7F).passengerAttachments(0.1875F).maxTrackingRange(8)
-					.build(RegistryKey.of(Registries.ENTITY_TYPE.getKey(),
-							Identifier.of(ExpressCarts.MOD_ID, "minecart"))));
+			BuiltInRegistries.ENTITY_TYPE,
+			ResourceLocation.fromNamespaceAndPath(ExpressCarts.MOD_ID, "minecart"),
+			EntityType.Builder.of(ExpressMinecartEntity::new, MobCategory.MISC).noLootTable()
+					.sized(0.98F, 0.7F).passengerAttachments(0.1875F).clientTrackingRange(8)
+					.build(ResourceKey.create(BuiltInRegistries.ENTITY_TYPE.key(),
+							ResourceLocation.fromNamespaceAndPath(ExpressCarts.MOD_ID, "minecart"))));
 
 	// TODO: make max speed configurable
 	public static final double MAX_MINECART_SPEED = 16;
@@ -46,7 +44,7 @@ public class ExpressCarts implements ModInitializer {
 
 		ModItems.initialize();
 
-		DispenserBlock.registerBehavior(ModItems.EXPRESS_MINECART, new MinecartDispenserBehavior(EXPRESS_MINECART_ENTITY));
+		DispenserBlock.registerBehavior(ModItems.EXPRESS_MINECART, new MinecartDispenseItemBehavior(EXPRESS_MINECART_ENTITY));
 
 		LOGGER.info("Express Carts ready!");
 	}
