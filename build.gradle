@@ -1,5 +1,7 @@
 plugins {
     id 'fabric-loom' version '1.10-SNAPSHOT'
+    id 'com.modrinth.minotaur' version '2.+'
+    id 'com.github.breadmoirai.github-release' version '2.4.1'
 }
 
 version = "${project.mod_version}+${project.minecraft_version}"
@@ -15,6 +17,11 @@ repositories {
     maven {
         name = 'ParchmentMC'
         url = 'https://maven.parchmentmc.org'
+    }
+
+    // https://github.com/xpple/BetterConfig/
+    maven {
+        url 'https://maven.xpple.dev/maven2'
     }
 }
 
@@ -46,6 +53,8 @@ dependencies {
     modImplementation include("eu.pb4:polymer-core:${project.polymer_version}")
     modImplementation include("eu.pb4:polymer-resource-pack:${project.polymer_version}")
     modImplementation include("xyz.nucleoid:server-translations-api:${project.server_translations_api_version}")
+
+    modImplementation include("dev.xpple:betterconfig-fabric:${project.betterconfig_version}")
 
     include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:${project.mixinextras_version}")))
 
@@ -82,4 +91,43 @@ jar {
     from("LICENSE") {
         rename { "${it}_${project.base.archivesName.get()}" }
     }
+}
+
+def changelogFile = file("CHANGELOG.md")
+def changelogText = changelogFile.exists() ? changelogFile.readLines("UTF-8").join("\n") : ""
+def readmeFile = file("README.md")
+def readmeText = readmeFile.exists() ? readmeFile.readLines("UTF-8").join("\n") : ""
+
+
+modrinth {
+    token = System.getenv("MODRINTH_TOKEN")
+    projectId = "express-carts"
+    versionName = "${project.mod_version} for Fabric ${project.minecraft_version}"
+    uploadFile = remapJar
+    changelog = changelogText
+    syncBodyFrom = readmeText
+    dependencies {
+        required.project "fabric-api"
+        embedded.project "polymer"
+        embedded.project "betterconfig"
+    }
+}
+tasks.modrinth.onlyIf {
+    !changelogText.isBlank() && !readmeText.isBlank()
+}
+tasks.modrinth.dependsOn(tasks.modrinthSyncBody)
+
+githubRelease {
+    token((System.getenv("GITHUB_TOKEN") ?: ""))
+    owner "seercat3160"
+    repo "express-carts"
+    tagName "${project.mod_version}+${project.minecraft_version}"
+    targetCommitish "main"
+    releaseName "${project.mod_version} for Fabric ${project.minecraft_version}"
+    body changelogText
+    draft true
+    releaseAssets remapJar.outputs
+}
+tasks.githubRelease.onlyIf {
+    !changelogText.isBlank()
 }

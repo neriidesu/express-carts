@@ -62,9 +62,9 @@ public class ExpressMinecartEntity extends Minecart implements PolymerEntity {
     protected @NotNull Vec3 applyNaturalSlowdown(Vec3 velocity) {
         Vec3 vel = super.applyNaturalSlowdown(velocity);
 
-        if (this.getFirstPassenger() instanceof ServerPlayer player && player.getLastClientInput().backward()) {
+        if (ExpressCartsConfig.brakingEnabled && this.getFirstPassenger() instanceof ServerPlayer player && player.getLastClientInput().backward()) {
             // stop completely if going slowly. otherwise, slow down (but not as quickly as an unpowered powered rail)
-            return vel.length() < 0.03 ? Vec3.ZERO : vel.scale(1 - ExpressCarts.BRAKE_SLOWDOWN);
+            return vel.length() < 0.03 ? Vec3.ZERO : vel.scale(ExpressCartsConfig.brakeSlowdown);
         }
 
         return vel;

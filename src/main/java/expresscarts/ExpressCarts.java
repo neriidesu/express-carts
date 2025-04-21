@@ -1,8 +1,11 @@
 package expresscarts;
 
+import dev.xpple.betterconfig.api.ModConfigBuilder;
 import eu.pb4.polymer.core.api.entity.PolymerEntityUtils;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
 import net.minecraft.core.dispenser.MinecartDispenseItemBehavior;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -26,19 +29,10 @@ public class ExpressCarts implements ModInitializer {
 					.build(ResourceKey.create(BuiltInRegistries.ENTITY_TYPE.key(),
 							ResourceLocation.fromNamespaceAndPath(ExpressCarts.MOD_ID, "minecart"))));
 
-	// TODO: make max speed configurable
-	public static final double MAX_MINECART_SPEED = 16;
-	/**
-	 * Multiplier to the max minecart speed when in water.
-	 */
-	public static final double WATER_SPEED_MULTIPLIER = 0.5;
-	/**
-	 * Slowdown rate, in blocks per tick squared, applied when a player applies the brakes.
-	 */
-	public static final double BRAKE_SLOWDOWN = 0.2;
-
 	@Override
 	public void onInitialize() {
+		new ModConfigBuilder<CommandSourceStack, CommandBuildContext>(ExpressCarts.MOD_ID, ExpressCartsConfig.class).build();
+
 		PolymerEntityUtils.registerType(EXPRESS_MINECART_ENTITY);
 		PolymerResourcePackUtils.addModAssets(ExpressCarts.MOD_ID);
 
