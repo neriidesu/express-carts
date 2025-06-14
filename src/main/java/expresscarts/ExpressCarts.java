@@ -1,12 +1,10 @@
 package expresscarts;
 
-import dev.xpple.betterconfig.api.BetterConfigAPI;
-import dev.xpple.betterconfig.api.Config;
 import dev.xpple.betterconfig.api.ModConfigBuilder;
-import dev.xpple.betterconfig.impl.BetterConfigImpl;
-import dev.xpple.betterconfig.impl.BetterConfigInternals;
 import eu.pb4.polymer.core.api.entity.PolymerEntityUtils;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
+import expresscarts.config.BlockArgumentType;
+import expresscarts.config.BlockTypeAdapter;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
@@ -18,14 +16,12 @@ import net.minecraft.commands.Commands;
 import net.minecraft.core.Registry;
 import net.minecraft.core.dispenser.MinecartDispenseItemBehavior;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DispenserBlock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +44,9 @@ public class ExpressCarts implements ModInitializer {
     public void onInitialize() {
         ModMetadata metadata = FabricLoader.getInstance().getModContainer(ExpressCarts.MOD_ID).orElseThrow().getMetadata();
 
-        new ModConfigBuilder<CommandSourceStack, CommandBuildContext>(ExpressCarts.MOD_ID, ExpressCartsConfig.class).build();
+        new ModConfigBuilder<CommandSourceStack, CommandBuildContext>(ExpressCarts.MOD_ID, ExpressCartsConfig.class)
+                .registerTypeHierarchy(Block.class, new BlockTypeAdapter(), context -> new BlockArgumentType())
+                .build();
 
         PolymerEntityUtils.registerType(EXPRESS_MINECART_ENTITY);
         PolymerResourcePackUtils.addModAssets(ExpressCarts.MOD_ID);
@@ -72,8 +70,15 @@ public class ExpressCarts implements ModInitializer {
         return Component.empty()
                 .append(Component.translatable(
                         "expresscarts.command.expresscarts",
-                        Component.literal(metadata.getName()).withStyle(Style.EMPTY.withUnderlined(true).withColor(ChatFormatting.BLUE).withHoverEvent(new HoverEvent.ShowText(Component.translatable("expresscarts.command.expresscarts.hover.github"))).withClickEvent(new ClickEvent.OpenUrl(URI.create(metadata.getContact().get("sources").orElse("https://example.com"))))),
-                        metadata.getVersion().getFriendlyString()))
+                        Component.literal(metadata.getName())
+                                .withStyle(Style.EMPTY
+                                        .withUnderlined(true)
+                                        .withColor(ChatFormatting.BLUE)
+                                        .withHoverEvent(new HoverEvent.ShowText(Component.translatable("expresscarts.command.expresscarts.hover.github")))
+                                        .withClickEvent(new ClickEvent.OpenUrl(URI.create(metadata.getContact().get("sources").orElse("https://example.com"))))
+                                ),
+                        metadata.getVersion().getFriendlyString())
+                )
                 .append("\nCurrent Configuration:\n")
                 .append(Component.translatable("expresscarts.command.expresscarts.config.maxMinecartSpeed", ExpressCartsConfig.maxMinecartSpeed))
                 .append("\n")
@@ -81,7 +86,26 @@ public class ExpressCarts implements ModInitializer {
                 .append("\n")
                 .append(Component.translatable("expresscarts.command.expresscarts.config.brakingEnabled", String.valueOf(ExpressCartsConfig.brakingEnabled)))
                 .append("\n")
-                .append(Component.translatable("expresscarts.command.expresscarts.config.brakeSlowdown", ExpressCartsConfig.brakeSlowdown));
+                .append(Component.translatable("expresscarts.command.expresscarts.config.brakeSlowdown", ExpressCartsConfig.brakeSlowdown))
+                .append("\n")
+                .append(buildBlockOverridesMessage());
+    }
+
+    Component buildBlockOverridesMessage() {
+        var overrides = ExpressCartsConfig.blockSpeedMultipliers;
+
+        if (overrides.isEmpty()) {
+            return Component.translatable("expresscarts.command.expresscarts.config.blockSpeedMultipliers.none");
+        }
+
+        var component = Component.translatable("expresscarts.command.expresscarts.config.blockSpeedMultipliers.some", overrides.size()).copy();
+
+        for (var entry : overrides.entrySet()) {
+            component.append("\n");
+            component.append(Component.translatable("expresscarts.command.expresscarts.config.blockSpeedMultipliers.entry", BuiltInRegistries.BLOCK.getKey(entry.getKey()).toString(), entry.getValue()));
+        }
+
+        return component;
     }
 
 }

@@ -54,3 +54,4 @@ while the server is stopped. The following configuration options are available:
 - `waterSpeedMultiplier` (default 0.5): The scaling factor applied to an Express Minecart's maximum speed when it is in water.
 - `brakingEnabled` (default `true`): Whether players can hold the backwards movement key to brake.
 - `brakeSlowdown` (default 0.8): Amount by which an Express Minecart's velocity is scaled each tick their passenger holds the brakes.
+- `blockSpeedMultipliers`: A map from block ids (e.g. `minecraft:dirt`) to multiplier values for the maximum cart speed if the rail is placed on that block.

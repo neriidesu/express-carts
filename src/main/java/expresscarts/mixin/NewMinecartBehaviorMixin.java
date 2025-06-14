@@ -1,6 +1,5 @@
 package expresscarts.mixin;
 
-import expresscarts.ExpressCarts;
 import expresscarts.ExpressCartsConfig;
 import expresscarts.ExpressMinecartEntity;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
@@ -19,10 +18,25 @@ public abstract class NewMinecartBehaviorMixin extends MinecartBehavior {
     }
 
     @Inject(method = "getMaxSpeed", at = @At("HEAD"), cancellable = true)
-    // If we're using this controller for an ExpressMinecartEntity, use the configured speed for that
+    // If we're using this controller for an ExpressMinecartEntity, use the configured speed for that, including any multipliers
     private void onGetMaxSpeed(CallbackInfoReturnable<Double> cir) {
         if (this.minecart instanceof ExpressMinecartEntity) {
-            cir.setReturnValue(ExpressCartsConfig.maxMinecartSpeed * (this.minecart.isInWater() ? ExpressCartsConfig.waterSpeedMultiplier : 1.0) / 20.0);
+            var baseSpeed = ExpressCartsConfig.maxMinecartSpeed;
+            var waterSpeedMultiplier = this.minecart.isInWater() ? ExpressCartsConfig.waterSpeedMultiplier : 1.0;
+            var blockMultiplier = 1.0;
+
+            if (!ExpressCartsConfig.blockSpeedMultipliers.isEmpty()) {
+                if (this.minecart.isOnRails()) {
+                    var railPos = this.minecart.getCurrentBlockPosOrRailBelow();
+                    // check the block below the rail
+                    var blockPos = railPos.below();
+                    var blockState = this.level().getBlockState(blockPos);
+
+                    blockMultiplier = ExpressCartsConfig.blockSpeedMultipliers.getOrDefault(blockState.getBlock(), 1.0);
+                }
+            }
+
+            cir.setReturnValue((baseSpeed * blockMultiplier * waterSpeedMultiplier) / 20.0);
         }
     }
 }

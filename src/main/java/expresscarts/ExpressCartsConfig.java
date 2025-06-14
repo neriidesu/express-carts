@@ -1,6 +1,10 @@
 package expresscarts;
 
 import dev.xpple.betterconfig.api.Config;
+import net.minecraft.world.level.block.Block;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ExpressCartsConfig {
     @Config(comment = "Maximum speed of Express Minecarts, in blocks per second.")
@@ -12,6 +16,9 @@ public class ExpressCartsConfig {
     @Config(comment = "Whether players may hold the backwards movement key to brake.")
     public static boolean brakingEnabled = true;
 
-    @Config(comment = "Amount by which an Express Minecart's velocity is scaled each tick their passenger holds the brakes.")
+    @Config(comment = "Amount by which an Express Minecart's velocity is scaled each tick its passenger holds the brakes.")
     public static double brakeSlowdown = 0.8;
+
+    @Config(comment = "Max speed multipliers when the rails are on certain blocks.")
+    public static Map<Block, Double> blockSpeedMultipliers = new HashMap<>();
 }
