@@ -1,6 +1,10 @@
 package expresscarts;
 
+import dev.xpple.betterconfig.api.BetterConfigAPI;
+import dev.xpple.betterconfig.api.Config;
 import dev.xpple.betterconfig.api.ModConfigBuilder;
+import dev.xpple.betterconfig.impl.BetterConfigImpl;
+import dev.xpple.betterconfig.impl.BetterConfigInternals;
 import eu.pb4.polymer.core.api.entity.PolymerEntityUtils;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import net.fabricmc.api.ModInitializer;
@@ -55,19 +59,29 @@ public class ExpressCarts implements ModInitializer {
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             dispatcher.register(Commands.literal("expresscarts").executes(context -> {
-                context.getSource().sendSuccess(() -> Component.translatable(
-                        "expresscarts.command.expresscarts",
-                        Component.literal(metadata.getName()).withStyle(Style.EMPTY.withUnderlined(true).withColor(ChatFormatting.BLUE).withHoverEvent(new HoverEvent.ShowText(Component.translatable("expresscarts.command.expresscarts.hover.github"))).withClickEvent(new ClickEvent.OpenUrl(URI.create(metadata.getContact().get("sources").orElse("https://example.com"))))),
-                        metadata.getVersion().getFriendlyString()), false);
-                context.getSource().sendSuccess(() -> Component.translatable("expresscarts.command.expresscarts.config.maxMinecartSpeed", ExpressCartsConfig.maxMinecartSpeed), false);
-                context.getSource().sendSuccess(() -> Component.translatable("expresscarts.command.expresscarts.config.waterSpeedMultiplier", ExpressCartsConfig.waterSpeedMultiplier), false);
-                context.getSource().sendSuccess(() -> Component.translatable("expresscarts.command.expresscarts.config.brakingEnabled", String.valueOf(ExpressCartsConfig.brakingEnabled)), false);
-                context.getSource().sendSuccess(() -> Component.translatable("expresscarts.command.expresscarts.config.brakeSlowdown", ExpressCartsConfig.brakeSlowdown), false);
+                context.getSource().sendSuccess(() -> buildConfigurationMessage(metadata), false);
                 return 1;
             }));
         });
 
         LOGGER.info("Express Carts ready!");
+    }
+
+    Component buildConfigurationMessage(ModMetadata metadata) {
+        // Ideally we'd have hover text on each config entry with the comment to explain what it does, but there's no public api for that in BetterConfig
+        return Component.empty()
+                .append(Component.translatable(
+                        "expresscarts.command.expresscarts",
+                        Component.literal(metadata.getName()).withStyle(Style.EMPTY.withUnderlined(true).withColor(ChatFormatting.BLUE).withHoverEvent(new HoverEvent.ShowText(Component.translatable("expresscarts.command.expresscarts.hover.github"))).withClickEvent(new ClickEvent.OpenUrl(URI.create(metadata.getContact().get("sources").orElse("https://example.com"))))),
+                        metadata.getVersion().getFriendlyString()))
+                .append("\nCurrent Configuration:\n")
+                .append(Component.translatable("expresscarts.command.expresscarts.config.maxMinecartSpeed", ExpressCartsConfig.maxMinecartSpeed))
+                .append("\n")
+                .append(Component.translatable("expresscarts.command.expresscarts.config.waterSpeedMultiplier", ExpressCartsConfig.waterSpeedMultiplier))
+                .append("\n")
+                .append(Component.translatable("expresscarts.command.expresscarts.config.brakingEnabled", String.valueOf(ExpressCartsConfig.brakingEnabled)))
+                .append("\n")
+                .append(Component.translatable("expresscarts.command.expresscarts.config.brakeSlowdown", ExpressCartsConfig.brakeSlowdown));
     }
 
 }

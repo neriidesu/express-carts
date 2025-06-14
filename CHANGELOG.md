@@ -1,2 +1,1 @@
-- Update to 1.21.5.
-  - 1.21.4 will continue to be supported for the time being.
+- Improve the display of the `/expresscarts` command
