@@ -8,6 +8,11 @@
     "expresscarts.command.expresscarts.config.blockSpeedMultipliers.none": "There are no block speed multipliers set",
     "expresscarts.command.expresscarts.config.blockSpeedMultipliers.some": "There are %s block speed multipliers set:",
     "expresscarts.command.expresscarts.config.blockSpeedMultipliers.entry": "%s: %s",
-    "expresscarts.command.expresscarts.hover.github": "Click to open the mod's GitHub page"
+    "expresscarts.command.expresscarts.hover.github": "Click to open the mod's GitHub page",
+    "expresscarts.config.comment.maxMinecartSpeed": "Base maximum speed of Express Minecarts, in blocks per second.",
+    "expresscarts.config.comment.waterSpeedMultiplier": "Multiplier to the maximum Express Minecart speed when in water.",
+    "expresscarts.config.comment.brakingEnabled": "Whether players may hold the backwards movement key to brake.",
+    "expresscarts.config.comment.brakeSlowdown": "Amount by which an Express Minecart's velocity is scaled each tick its passenger holds the brakes.",
+    "expresscarts.config.comment.blockSpeedMultipliers": "Max speed multipliers when the rails are on certain blocks."
 
 }

@@ -1,24 +1,40 @@
 package expresscarts;
 
 import dev.xpple.betterconfig.api.Config;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ExpressCartsConfig {
-    @Config(comment = "Maximum speed of Express Minecarts, in blocks per second.")
+    @Config(comment = "maxMinecartSpeedComment")
     public static double maxMinecartSpeed = 16;
+    public static Component maxMinecartSpeedComment() {
+        return Component.translatable("expresscarts.config.comment.maxMinecartSpeed");
+    }
 
-    @Config(comment = "Multiplier to the max minecart speed when in water.")
+    @Config(comment = "waterSpeedMultiplierComment")
     public static double waterSpeedMultiplier = 0.5;
+    public static Component waterSpeedMultiplierComment() {
+        return Component.translatable("expresscarts.config.comment.waterSpeedMultiplier");
+    }
 
-    @Config(comment = "Whether players may hold the backwards movement key to brake.")
+    @Config(comment = "brakingEnabledComment")
     public static boolean brakingEnabled = true;
+    public static Component brakingEnabledComment() {
+        return Component.translatable("expresscarts.config.comment.brakingEnabled");
+    }
 
-    @Config(comment = "Amount by which an Express Minecart's velocity is scaled each tick its passenger holds the brakes.")
+    @Config(comment = "brakeSlowdownComment")
     public static double brakeSlowdown = 0.8;
+    public static Component brakeSlowdownComment() {
+        return Component.translatable("expresscarts.config.comment.brakeSlowdown");
+    }
 
-    @Config(comment = "Max speed multipliers when the rails are on certain blocks.")
+    @Config(comment = "blockSpeedMultipliersComment")
     public static Map<Block, Double> blockSpeedMultipliers = new HashMap<>();
+    public static Component blockSpeedMultipliersComment() {
+        return Component.translatable("expresscarts.config.comment.blockSpeedMultipliers");
+    }
 }

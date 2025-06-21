@@ -47,7 +47,8 @@ dependencies {
         officialMojangMappings() {
             nameSyntheticMembers = true
         }
-        parchment("org.parchmentmc.data:parchment-${project.minecraft_version}:${project.parchment_version}@zip")
+        // TODO: fix when Parchment is available for 1.21.6
+        // parchment("org.parchmentmc.data:parchment-${project.minecraft_version}:${project.parchment_version}@zip")
     }
 
     modImplementation include("eu.pb4:polymer-core:${project.polymer_version}")
@@ -122,7 +123,7 @@ githubRelease {
     owner "seercat3160"
     repo "express-carts"
     tagName "${project.mod_version}+${project.minecraft_version}"
-    targetCommitish "1.21.5"
+    targetCommitish "1.21.6"
     releaseName "${project.mod_version} for Fabric ${project.minecraft_version}"
     body changelogText
     draft true
