@@ -21,17 +21,12 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Build
-        run: ./gradlew build
+        run: ./gradlew build -Ppublish.release=true
 
-      - name: Release to GitHub
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew githubRelease
-
-      - name: Release to Modrinth
+      - name: Release to Modrinth and GitHub
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
-        run: ./gradlew modrinth
+        run: ./gradlew publishMods -Ppublish.release=true
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4

@@ -20,7 +20,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Build
-        run: ./gradlew build -Pmod_version="$(git describe --always --tags)"
+        run: ./gradlew build -Pmod.version="$(git describe --always --tags)"
 
       - name: Upload Artifacts
         if: ${{ matrix.java == '21' }}
