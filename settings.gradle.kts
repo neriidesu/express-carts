@@ -3,13 +3,27 @@ pluginManagement {
 		maven("https://maven.fabricmc.net/")
 		mavenCentral()
 		gradlePluginPortal()
+		maven("https://maven.kikugie.dev/snapshots") { name = "KikuGie Snapshots" }
+	}
+
+	plugins {
+		id("net.fabricmc.fabric-loom").version(providers.gradleProperty("plugins.loom")).apply(false)
+		id("net.fabricmc.fabric-loom-remap").version(providers.gradleProperty("plugins.loom")).apply(false)
+		id("me.modmuss50.mod-publish-plugin").version(providers.gradleProperty("plugins.mod-publish-plugin")).apply(false)
+		id("dev.kikugie.stonecutter").version(providers.gradleProperty("plugins.stonecutter")).apply(false)
 	}
 }
 
 plugins {
-	// These are not applied at this level, but we specify them here to set the versions.
-	id("net.fabricmc.fabric-loom-remap").version("1.15-SNAPSHOT").apply(false)
-	id("com.modrinth.minotaur").version("2.+").apply(false)
-	id("com.github.breadmoirai.github-release").version("2.4.1").apply(false)
-	id("me.modmuss50.mod-publish-plugin").version("1.1.0").apply(false)
+	id("dev.kikugie.stonecutter")
 }
+
+stonecutter {
+	create(rootProject) {
+		versions("1.21.11").buildscript("build.obfuscated.gradle.kts")
+		versions("26.1").buildscript("build.gradle.kts")
+		vcsVersion = "1.21.11"
+	}
+}
+
+rootProject.name = "express-carts"

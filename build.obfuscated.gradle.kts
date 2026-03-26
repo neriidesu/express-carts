@@ -1,5 +1,5 @@
 plugins {
-    id("net.fabricmc.fabric-loom")
+    id("net.fabricmc.fabric-loom-remap")
     id("me.modmuss50.mod-publish-plugin")
 }
 
@@ -18,12 +18,14 @@ repositories {
 }
 
 dependencies {
-    fun modInclude(dep: Any): Dependency? = implementation(include(dep)!!)
+    fun modInclude(dep: Any): Dependency? = modImplementation(include(dep)!!)
 
     minecraft("com.mojang:minecraft:${sc.current.version}")
-    implementation("net.fabricmc:fabric-loader:${property("deps.fabric.loader")}")
+    modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric.loader")}")
 
-    implementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric.api")}")
+    mappings(loom.officialMojangMappings())
+
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric.api")}")
 
     modInclude("eu.pb4:polymer-core:${property("deps.polymer")}")
     modInclude("eu.pb4:polymer-resource-pack:${property("deps.polymer")}")
@@ -62,7 +64,7 @@ tasks {
     // Builds the version into a shared folder in `build/libs/${mod version}/`
     register<Copy>("buildAndCollect") {
         group = "build"
-        from(jar.map { it.archiveFile })
+        from(remapJar.map { it.archiveFile }, remapSourcesJar.map { it.archiveFile })
         into(rootProject.layout.buildDirectory.file("libs/${project.property("mod.version")}"))
         dependsOn("build")
     }
@@ -117,7 +119,7 @@ val readmeText = if (readmeFile.canRead()) readmeFile.readText() else ""
 publishMods {
     changelog = changelogText
     type = STABLE
-    file = tasks.jar.flatMap { it.archiveFile }
+    file = tasks.remapJar.flatMap { it.archiveFile }
     displayName = "$modVersion for ${sc.current.version} Fabric"
 
     dryRun = !hasProperty("publish.release")
