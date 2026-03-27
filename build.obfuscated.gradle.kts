@@ -3,9 +3,7 @@ plugins {
     id("me.modmuss50.mod-publish-plugin")
 }
 
-val modVersion = "${property("mod.version")}${localBuildVersionSuffix().get()}"
-
-version = "$modVersion+${sc.current.version}"
+version = "${rootProject.version}+${sc.current.version}"
 group = property("mod.group").toString()
 
 base.archivesName = "${property("mod.id")}-fabric"
@@ -64,7 +62,7 @@ tasks {
     // Builds the version into a shared folder in `build/libs/${mod version}/`
     register<Copy>("buildAndCollect") {
         group = "build"
-        from(remapJar.map { it.archiveFile }, remapSourcesJar.map { it.archiveFile })
+        from(remapJar.map { it.archiveFile })
         into(rootProject.layout.buildDirectory.file("libs/${project.property("mod.version")}"))
         dependsOn("build")
     }
@@ -111,23 +109,21 @@ java {
     targetCompatibility = requiredJava
 }
 
-val changelogFile = file("CHANGELOG.md")
-val changelogText = if (changelogFile.canRead()) changelogFile.readText() else ""
-val readmeFile = file("README.md")
-val readmeText = if (readmeFile.canRead()) readmeFile.readText() else ""
+val readmeText = rootProject.providers.fileContents(rootProject.layout.projectDirectory.file("README.md")).asText
+val changelogText = rootProject.providers.fileContents(rootProject.layout.projectDirectory.file("CHANGELOG.md")).asText
 
 publishMods {
     changelog = changelogText
     type = STABLE
     file = tasks.remapJar.flatMap { it.archiveFile }
-    displayName = "$modVersion for ${sc.current.version} Fabric"
+    displayName = "${rootProject.version} for ${sc.current.version} Fabric"
 
     dryRun = !hasProperty("publish.release")
 
     modrinth {
         accessToken = providers.environmentVariable("MODRINTH_API_KEY")
         projectId = providers.gradleProperty("publish.modrinth.id")
-        minecraftVersions.add(providers.gradleProperty("publish.modrinth.minecraft"))
+        minecraftVersions.addAll(property("publish.modrinth.minecraft").toString().split(' '))
 
         projectDescription = readmeText
 
@@ -138,31 +134,14 @@ publishMods {
 
     github {
         accessToken = providers.environmentVariable("GITHUB_TOKEN")
-        repository = providers.environmentVariable("GITHUB_REPOSITORY_ID").orElse(providers.gradleProperty("publish.github.repository"))
-        commitish = providers.environmentVariable("GITHUB_REF").orElse(providers.gradleProperty("publish.github.commitish"))
+
+        // We want to publish only one GitHub release per mod version, containing all the different Minecraft version jars
+        parent(project(":").tasks.named("publishGithub"))
     }
 }
 
 tasks.named("publishMods") {
     onlyIf {
-        !changelogText.isBlank() && !readmeText.isBlank()
+        changelogText.isPresent && readmeText.isPresent
     }
-}
-
-// If we are not performing a release build (i.e. building in CI), try to get some info about the state of the Git repo
-// to add to the version (so local builds can be easily distinguished from released builds).
-private fun localBuildVersionSuffix(): Provider<String> {
-    // git will give the (abbreviated) commit hash, suffixed with "-dirty" if the working dir is dirty.
-    // If we can't exec git, fallback to just "-local"
-    val gitCommitProvider = providers.exec {
-        commandLine("git", "describe", "--always", "--dirty", "--exclude", "*")
-    }.standardOutput.asText.map {
-        "-${it.trim()}"
-    }.orElse("-local")
-
-    return providers.gradleProperty("publish.release").map {
-        // If this is called, the "publish.release" property is present.
-        // Return an empty string.
-        return@map ""
-    }.orElse(gitCommitProvider)
 }

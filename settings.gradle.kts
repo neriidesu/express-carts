@@ -22,7 +22,7 @@ stonecutter {
 	create(rootProject) {
 		versions("1.21.11").buildscript("build.obfuscated.gradle.kts")
 		versions("26.1").buildscript("build.gradle.kts")
-		vcsVersion = "1.21.11"
+		vcsVersion = "26.1"
 	}
 }
 
