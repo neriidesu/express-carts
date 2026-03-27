@@ -42,7 +42,7 @@ publishMods {
     github {
         accessToken = providers.environmentVariable("GITHUB_TOKEN")
 
-        repository = providers.environmentVariable("GITHUB_REPOSITORY_ID").orElse(providers.gradleProperty("publish.github.repository"))
+        repository = providers.environmentVariable("GITHUB_REPOSITORY").orElse(providers.gradleProperty("publish.github.repository"))
         commitish = providers.environmentVariable("GITHUB_REF").orElse(providers.gradleProperty("publish.github.commitish"))
 
         tagName = rootProject.version.toString()

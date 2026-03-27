@@ -121,7 +121,7 @@ publishMods {
     dryRun = !hasProperty("publish.release")
 
     modrinth {
-        accessToken = providers.environmentVariable("MODRINTH_API_KEY")
+        accessToken = providers.environmentVariable("MODRINTH_TOKEN")
         projectId = providers.gradleProperty("publish.modrinth.id")
         minecraftVersions.addAll(property("publish.modrinth.minecraft").toString().split(' '))
 
